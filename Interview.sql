@@ -411,6 +411,90 @@ VALUES
 (2, 'Mohit', 1000, 15000, 5),
 (3, 'Vikas', 1000, 10000, 4);
 
+select * from Employees1
+
+select e.*,m.name
+from Employees1 e 
+join Employees1 m
+on e.managerid = m.id
+	
+
+/* Unpivot*/
+
+select * from [dbo].[SalesData]
+
+select SalesAgent,Country,Score
+from [dbo].[SalesData]
+unpivot (
+       Score for country in (India,US,UK)
+	  ) as P 
+
+select * from  TechSales 
+
+select product , year , Q1,Q2,Q3,Q4 
+from TechSales
+pivot (
+  Max(SalesAmount) for Quarter in ( Q1,Q2,Q3,Q4) ) as p
+
+/* 13/04/2026*/
+
+CREATE TABLE users(user_id INT, user_name varchar(30));
+INSERT INTO users VALUES (1, 'Karl'), (2, 'Hans'), (3, 'Emma'), (4, 'Emma'), (5, 'Mike'), (6, 'Lucas'), (7, 'Sarah'), (8, 'Lucas'), (9, 'Anna'), (10, 'John');
+
+CREATE TABLE friends(user_id INT, friend_id INT);
+INSERT INTO friends VALUES (1,3),(1,5),(2,3),(2,4),(3,1),(3,2),(3,6),(4,7),(5,8),(6,9),(7,10),(8,6),(9,10),(10,7),(10,9);
+
+Select * from users
+select * from friends
+
+/*  find mutual friends between two users, Karl and Hans. */
+
+SELECT u.user_id, u.user_name
+FROM users u
+WHERE u.user_id IN (
+    SELECT f1.friend_id
+    FROM friends f1
+    JOIN friends f2
+        ON f1.friend_id = f2.friend_id
+    WHERE f1.user_id = (SELECT user_id FROM users WHERE user_name = 'Karl')
+      AND f2.user_id = (SELECT user_id FROM users WHERE user_name = 'Hans')
+);
+;
+
+select * from [dbo].[Employees1]
+
+DELETE FROM Employees1
+WHERE id LIKE '2%';
+
+
+UPDATE Employees1
+SET managerId = 102
+WHERE id IN (104, 105);
+
+UPDATE Employees1
+SET managerId = 104
+WHERE id = 106;
+
+
+
+With T1 as
+(
+select id,name,managerId, 1 as Level
+from Employees1
+where managerId IS NULL
+
+UNION ALL
+
+select e.id,e.name,e.managerID,T1.level +1
+from Employees1 e
+join T1 on e.managerId = T1.id
+
+)
+select * from T1 
+order by level 
+
+
+
 
 
 
